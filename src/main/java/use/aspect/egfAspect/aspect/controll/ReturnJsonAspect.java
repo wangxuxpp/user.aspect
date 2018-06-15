@@ -9,8 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import use.aspect.egfAspect.annotation.RetrunJson;
+import use.common.exception.JsonException;
+import use.common.exception.SystemException;
 import use.common.json.JSONResult;
-import use.common.util.ExceptionUtil;
 
 
 
@@ -57,13 +58,15 @@ public class ReturnJsonAspect implements IAspectInterface{
 			json.setJsonType("error");
 			json.setJsonMessage(info);
 			
-			ExceptionUtil.throwError(er, log);
+			JsonException.threw(er, json);
+			throw new SystemException(er);
 		} catch (Throwable e) {
 			String info = an.errorMessage()+e.getMessage();
 			json.setJsonType("error");
 			json.setJsonMessage(info);
 			
-			ExceptionUtil.throwError(e, log);
+			JsonException.threw(e, json);
+			throw new SystemException(e);
 		}
 		return json;
 	}
